@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academic Integrity Investigation Timeline</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .timeline-container {
+            position: relative;
+            padding: 2rem 0;
+        }
+
+        .timeline-line {
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: #e2e8f0;
+            z-index: 1;
+        }
+
+        .step-node {
+            position: relative;
+            z-index: 2;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .step-node:hover .node-circle {
+            transform: scale(1.2);
+            box-shadow: 0 0 15px rgba(59, 130, 246, 0.5);
+        }
+
+        .node-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 4px solid #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1e40af;
+            transition: all 0.3s ease;
+        }
+
+        .step-content {
+            opacity: 0.4;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .step-content.active {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+        .details-panel {
+            display: none;
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Mobile Adjustments */
+        @media (max-width: 768px) {
+            .timeline-line { left: 20px; }
+            .step-node { flex-direction: row !important; align-items: flex-start !important; margin-left: 0 !important; }
+            .node-container { margin-right: 20px; }
+            .step-content { text-align: left !important; width: 100% !important; margin-bottom: 2rem; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">Academic Integrity Investigation Process</h1>
+            <p class="text-slate-600">Director of Academic Conduct Official Timeline</p>
+            <div class="mt-4 inline-block bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-medium">
+                Click any step to view procedural details
+            </div>
+        </header>
+
+        <div class="timeline-container">
+            <div class="timeline-line"></div>
+
+            <!-- Step 1 -->
+            <div class="flex flex-col md:flex-row items-center mb-12 step-node" onclick="showDetail(1)">
+                <div class="w-full md:w-1/2 text-right pr-0 md:pr-12 step-content" id="content-1">
+                    <h3 class="text-xl font-bold text-slate-800">1. Allegation & Reporting</h3>
+                    <p class="text-slate-500">Instructor identifies potential violation and submits formal report.</p>
+                </div>
+                <div class="node-container">
+                    <div class="node-circle" id="node-1">1</div>
+                </div>
+                <div class="w-full md:w-1/2 hidden md:block pl-12"></div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="flex flex-col md:flex-row items-center mb-12 step-node" onclick="showDetail(2)">
+                <div class="w-full md:w-1/2 hidden md:block pr-12"></div>
+                <div class="node-container">
+                    <div class="node-circle" id="node-2">2</div>
+                </div>
+                <div class="w-full md:w-1/2 text-left pl-0 md:pl-12 step-content" id="content-2">
+                    <h3 class="text-xl font-bold text-slate-800">2. Initial Review</h3>
+                    <p class="text-slate-500">Conduct office reviews evidence to determine if a policy breach is plausible.</p>
+                </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="flex flex-col md:flex-row items-center mb-12 step-node" onclick="showDetail(3)">
+                <div class="w-full md:w-1/2 text-right pr-0 md:pr-12 step-content" id="content-3">
+                    <h3 class="text-xl font-bold text-slate-800">3. Notice to Student</h3>
+                    <p class="text-slate-500">Formal notification sent to student outlining charges and rights.</p>
+                </div>
+                <div class="node-container">
+                    <div class="node-circle" id="node-3">3</div>
+                </div>
+                <div class="w-full md:w-1/2 hidden md:block pl-12"></div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="flex flex-col md:flex-row items-center mb-12 step-node" onclick="showDetail(4)">
+                <div class="w-full md:w-1/2 hidden md:block pr-12"></div>
+                <div class="node-container">
+                    <div class="node-circle" id="node-4">4</div>
+                </div>
+                <div class="w-full md:w-1/2 text-left pl-0 md:pl-12 step-content" id="content-4">
+                    <h3 class="text-xl font-bold text-slate-800">4. Investigation Meeting</h3>
+                    <p class="text-slate-500">Student meets with Case Manager to provide their account of events.</p>
+                </div>
+            </div>
+
+            <!-- Step 5 -->
+            <div class="flex flex-col md:flex-row items-center mb-12 step-node" onclick="showDetail(5)">
+                <div class="w-full md:w-1/2 text-right pr-0 md:pr-12 step-content" id="content-5">
+                    <h3 class="text-xl font-bold text-slate-800">5. Adjudication</h3>
+                    <p class="text-slate-500">Outcome decided via Administrative Resolution or Honor Committee Hearing.</p>
+                </div>
+                <div class="node-container">
+                    <div class="node-circle" id="node-5">5</div>
+                </div>
+                <div class="w-full md:w-1/2 hidden md:block pl-12"></div>
+            </div>
+
+            <!-- Step 6 -->
+            <div class="flex flex-col md:flex-row items-center mb-12 step-node" onclick="showDetail(6)">
+                <div class="w-full md:w-1/2 hidden md:block pr-12"></div>
+                <div class="node-container">
+                    <div class="node-circle" id="node-6">6</div>
+                </div>
+                <div class="w-full md:w-1/2 text-left pl-0 md:pl-12 step-content" id="content-6">
+                    <h3 class="text-xl font-bold text-slate-800">6. Final Decision & Appeals</h3>
+                    <p class="text-slate-500">Sanctions applied; student notified of right to appeal the findings.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Detailed Modal Area -->
+        <div id="details-box" class="mt-8 p-6 bg-white rounded-xl border border-slate-200 shadow-lg details-panel">
+            <div class="flex justify-between items-start mb-4">
+                <h2 id="detail-title" class="text-2xl font-bold text-blue-800">Step Title</h2>
+                <button onclick="closeDetails()" class="text-slate-400 hover:text-slate-600">✕</button>
+            </div>
+            <div id="detail-body" class="text-slate-700 leading-relaxed space-y-3">
+                <!-- Content injected by JS -->
+            </div>
+            <div class="mt-6 pt-4 border-t border-slate-100 flex gap-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Policy Reference:</span>
+                <span id="detail-ref" class="text-xs text-slate-500 italic">Academic Code § 4.2</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const stepData = {
+            1: {
+                title: "Allegation & Reporting",
+                body: `
+                    <p>When an instructor suspects a violation (plagiarism, cheating, unauthorized collaboration), they must compile evidence including the syllabus, the student's work, and any source materials.</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>The instructor must not assign a grade until the process is complete.</li>
+                        <li>Report is submitted through the University portal within 10 business days of discovery.</li>
+                    </ul>
+                `,
+                ref: "University Statute Art. III, Sec 1"
+            },
+            2: {
+                title: "Initial Review",
+                body: `
+                    <p>The Office of Academic Conduct reviews the submission to ensure the behavior described constitutes a violation of university policy.</p>
+                    <p>If evidence is insufficient, the case is dismissed. If sufficient, a case file is opened and a Case Manager is assigned.</p>
+                `,
+                ref: "Conduct Bylaws § 12.A"
+            },
+            3: {
+                title: "Notice to Student",
+                body: `
+                    <p>The student receives an official email via their university account. This notice includes:</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li>The specific policy allegedly violated.</li>
+                        <li>A link to the evidence file.</li>
+                        <li>A description of the student's rights (right to advisor, right to review evidence).</li>
+                        <li>A deadline to schedule an investigation meeting.</li>
+                    </ul>
+                `,
+                ref: "Due Process Standard 2.4"
+            },
+            4: {
+                title: "Investigation Meeting",
+                body: `
+                    <p>This is a non-adversarial meeting between the student and the Case Manager. The student may bring a support person or advisor.</p>
+                    <p>The student has the opportunity to explain their perspective, provide additional documentation, or admit responsibility.</p>
+                `,
+                ref: "Student Rights Handbook"
+            },
+            5: {
+                title: "Adjudication",
+                body: `
+                    <p>Cases are resolved in one of two ways:</p>
+                    <ul class="list-disc ml-5 mt-2">
+                        <li><strong>Administrative Resolution:</strong> If the student admits responsibility, the Case Manager determines the sanction.</li>
+                        <li><strong>Honor Committee Hearing:</strong> If the student denies the charge or the case is complex, a panel of students and faculty hears the case and determines the outcome.</li>
+                    </ul>
+                `,
+                ref: "Governance Code 8.3"
+            },
+            6: {
+                title: "Final Decision & Appeals",
+                body: `
+                    <p>The student is notified of the final decision in writing. Sanctions may range from a warning or grade reduction to suspension or expulsion.</p>
+                    <p><strong>Appeals:</strong> Students have 5 business days to appeal based on procedural error, new evidence, or disproportionate sanctions.</p>
+                `,
+                ref: "Appellate Procedure Manual"
+            }
+        };
+
+        function showDetail(stepId) {
+            // Update Active States
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.node-circle').forEach(el => {
+                el.style.backgroundColor = 'white';
+                el.style.color = '#1e40af';
+            });
+
+            document.getElementById(`content-${stepId}`).classList.add('active');
+            const circle = document.getElementById(`node-${stepId}`);
+            circle.style.backgroundColor = '#3b82f6';
+            circle.style.color = 'white';
+
+            // Update Panel
+            const data = stepData[stepId];
+            document.getElementById('detail-title').innerText = data.title;
+            document.getElementById('detail-body').innerHTML = data.body;
+            document.getElementById('detail-ref').innerText = data.ref;
+
+            // Show Panel
+            const panel = document.getElementById('details-box');
+            panel.style.display = 'block';
+            
+            // Scroll to panel on mobile
+            if(window.innerWidth < 768) {
+                panel.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        function closeDetails() {
+            document.getElementById('details-box').style.display = 'none';
+            document.querySelectorAll('.step-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.node-circle').forEach(el => {
+                el.style.backgroundColor = 'white';
+                el.style.color = '#1e40af';
+            });
+        }
+
+        // Initialize with Step 1
+        window.onload = () => showDetail(1);
+    </script>
+</body>
+</html>
