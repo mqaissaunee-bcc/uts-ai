@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three Centuries of Prose — A Comparative Study</title>
+<meta name="description" content="An interactive analysis of English prose styles from 1755 to today, with side-by-side comparison and student annotation tools.">
+<style>
+  /* ---------- TOKENS ---------- */
+  :root {
+    /* parchment / library palette */
+    --bg: #f3ead8;
+    --bg-deep: #e8dcc0;
+    --ink: #1a1410;
+    --ink-soft: #4a3f33;
+    --rule: #8b6f47;
+    --accent: #8b1a1a;        /* crimson */
+    --accent-2: #1d4d3a;      /* forest */
+    --accent-3: #b8860b;      /* old gold */
+    --paper: #faf6ec;
+    --paper-edge: rgba(139, 111, 71, 0.25);
+    --highlight: rgba(184, 134, 11, 0.28);
+    --shadow: 0 1px 0 rgba(26, 20, 16, 0.06), 0 8px 24px -12px rgba(26, 20, 16, 0.25);
+
+    --serif-display: 'Cormorant Garamond', 'Garamond', 'Hoefler Text', 'Goudy Old Style', 'Baskerville', serif;
+    --serif-body: 'EB Garamond', 'Garamond', 'Hoefler Text', 'Iowan Old Style', 'Baskerville', Georgia, serif;
+    --sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1612;
+      --bg-deep: #0f0c08;
+      --ink: #ede4d0;
+      --ink-soft: #b8ac95;
+      --rule: #8b6f47;
+      --accent: #d4654a;
+      --accent-2: #6ba588;
+      --accent-3: #d4a838;
+      --paper: #221d16;
+      --paper-edge: rgba(139, 111, 71, 0.4);
+      --highlight: rgba(212, 168, 56, 0.25);
+      --shadow: 0 1px 0 rgba(0,0,0,0.3), 0 12px 32px -12px rgba(0,0,0,0.6);
+    }
+  }
+
+  /* ---------- RESET & BASE ---------- */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 20%, rgba(139, 111, 71, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 70%, rgba(139, 26, 26, 0.06) 0%, transparent 50%);
+    color: var(--ink);
+    font-family: var(--serif-body);
+    font-size: 18px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  .skip-link {
+    position: absolute; left: -9999px; top: 0;
+    background: var(--ink); color: var(--paper);
+    padding: 12px 18px; z-index: 1000;
+    text-decoration: none;
+    font-family: var(--sans);
+    font-size: 14px;
+  }
+  .skip-link:focus { left: 8px; top: 8px; }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* ---------- HEADER ---------- */
+  header.masthead {
+    border-bottom: 3px double var(--rule);
+    padding: 48px 24px 28px;
+    text-align: center;
+    position: relative;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-bottom: 14px;
+  }
+  h1 {
+    font-family: var(--serif-display);
+    font-weight: 500;
+    font-size: clamp(2.2rem, 5.5vw, 3.8rem);
+    line-height: 1.05;
+    margin: 0 0 12px;
+    letter-spacing: -0.01em;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+  .subtitle {
+    font-style: italic;
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    color: var(--ink-soft);
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  .ornament {
+    font-family: var(--serif-display);
+    color: var(--rule);
+    font-size: 1.8rem;
+    margin: 18px 0 8px;
+    letter-spacing: 0.4em;
+    user-select: none;
+  }
+  .professor-note {
+    margin: 24px auto 0;
+    max-width: 620px;
+    font-size: 14px;
+    color: var(--ink-soft);
+    font-family: var(--sans);
+    border-left: 2px solid var(--accent-3);
+    padding: 4px 16px;
+    text-align: left;
+  }
+
+  /* ---------- LAYOUT ---------- */
+  main { max-width: 1280px; margin: 0 auto; padding: 36px 24px 80px; }
+
+  /* ---------- TAB NAV ---------- */
+  .era-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 0;
+  }
+  .era-tab {
+    flex: 1 1 200px;
+    background: transparent;
+    border: none;
+    border-bottom: 3px solid transparent;
+    padding: 18px 16px;
+    font-family: var(--serif-display);
+    font-size: clamp(1rem, 1.6vw, 1.15rem);
+    color: var(--ink-soft);
+    cursor: pointer;
+    text-align: left;
+    min-height: 44px;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+    position: relative;
+  }
+  .era-tab:hover { color: var(--ink); background: var(--paper-edge); }
+  .era-tab[aria-selected="true"] {
+    color: var(--ink);
+    border-bottom-color: var(--accent);
+  }
+  .era-tab[aria-selected="true"]::before {
+    content: '';
+    position: absolute;
+    left: 16px; right: 16px; bottom: -3px;
+    height: 3px;
+    background: var(--accent);
+  }
+  .tab-year {
+    display: block;
+    font-family: var(--sans);
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-3);
+    margin-bottom: 4px;
+  }
+  .tab-title { display: block; font-style: italic; }
+  .tab-author {
+    display: block;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-soft);
+    margin-top: 2px;
+    font-style: normal;
+  }
+
+  /* ---------- ERA PANELS ---------- */
+  .era-panel {
+    display: none;
+    padding: 36px 0;
+    animation: fadeIn 0.4s ease;
+  }
+  .era-panel.active { display: block; }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .era-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+    gap: 36px;
+  }
+  @media (max-width: 880px) { .era-grid { grid-template-columns: 1fr; } }
+
+  /* the passage "page" */
+  .passage {
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    border-radius: 2px;
+    padding: 40px clamp(20px, 4vw, 56px);
+    box-shadow: var(--shadow);
+    position: relative;
+  }
+  .passage::before {
+    content: '';
+    position: absolute;
+    inset: 6px;
+    border: 1px solid var(--paper-edge);
+    pointer-events: none;
+    border-radius: 1px;
+  }
+  .passage-header {
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 16px;
+    margin-bottom: 24px;
+  }
+  .passage-header .work {
+    font-family: var(--serif-display);
+    font-size: 1.4rem;
+    font-style: italic;
+    margin: 0;
+  }
+  .passage-header .meta {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .passage-text {
+    font-size: clamp(1.02rem, 1.4vw, 1.12rem);
+    line-height: 1.85;
+  }
+  .passage-text p { margin: 0 0 1.1em; text-indent: 2em; }
+  .passage-text p:first-of-type { text-indent: 0; }
+  .passage-text p:first-of-type::first-letter {
+    font-family: var(--serif-display);
+    font-size: 3.6em;
+    line-height: 0.9;
+    float: left;
+    padding: 6px 8px 0 0;
+    color: var(--accent);
+    font-weight: 500;
+  }
+
+  /* highlightable spans for stylistic features */
+  .feature {
+    background: transparent;
+    padding: 2px 1px;
+    border-radius: 2px;
+    transition: background 0.25s, box-shadow 0.25s;
+    cursor: help;
+  }
+  .feature.lit {
+    background: var(--highlight);
+    box-shadow: 0 0 0 1px var(--accent-3);
+  }
+
+  /* ---------- ANALYSIS SIDEBAR ---------- */
+  .analysis {
+    background: transparent;
+    padding: 0;
+  }
+  .analysis h3 {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin: 0 0 12px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+  }
+  .analysis h3:not(:first-of-type) { margin-top: 28px; }
+
+  .stat-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px dotted var(--paper-edge); font-size: 14px; }
+  .stat-row .label { color: var(--ink-soft); font-family: var(--sans); }
+  .stat-row .value { font-family: var(--mono); font-size: 13px; }
+
+  .feature-toggles { display: flex; flex-wrap: wrap; gap: 6px; }
+  .feature-toggle {
+    background: transparent;
+    border: 1px solid var(--rule);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 12px;
+    padding: 6px 10px;
+    min-height: 32px;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: all 0.2s;
+  }
+  .feature-toggle:hover { background: var(--paper-edge); }
+  .feature-toggle[aria-pressed="true"] {
+    background: var(--accent-3);
+    color: var(--paper);
+    border-color: var(--accent-3);
+  }
+
+  .style-notes {
+    font-size: 14.5px;
+    line-height: 1.65;
+    color: var(--ink-soft);
+  }
+  .style-notes p { margin: 0 0 0.8em; }
+  .style-notes strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- COMPARE PANEL ---------- */
+  .compare-panel { padding: 36px 0; display: none; }
+  .compare-panel.active { display: block; }
+
+  .compare-controls {
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    padding: 18px 24px;
+    margin-bottom: 24px;
+    border-radius: 2px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .compare-controls > span {
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+  }
+
+  table.compare-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    box-shadow: var(--shadow);
+  }
+  table.compare-table th, table.compare-table td {
+    padding: 14px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--paper-edge);
+    vertical-align: top;
+    font-size: 14.5px;
+  }
+  table.compare-table thead th {
+    background: var(--bg-deep);
+    font-family: var(--serif-display);
+    font-style: italic;
+    font-size: 1.05rem;
+    border-bottom: 2px solid var(--rule);
+    position: sticky; top: 0;
+  }
+  table.compare-table thead th .yr {
+    display: block;
+    font-family: var(--sans);
+    font-style: normal;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    color: var(--accent-3);
+    margin-bottom: 2px;
+  }
+  table.compare-table tbody th {
+    background: var(--bg);
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-weight: 600;
+    width: 14%;
+  }
+  table.compare-table tbody tr:hover td { background: rgba(184, 134, 11, 0.06); }
+
+  @media (max-width: 720px) {
+    table.compare-table, table.compare-table thead, table.compare-table tbody, table.compare-table tr, table.compare-table th, table.compare-table td { display: block; }
+    table.compare-table thead { display: none; }
+    table.compare-table tbody tr { border-bottom: 2px solid var(--rule); padding: 12px 0; }
+    table.compare-table tbody td { border: none; padding: 8px 16px; }
+    table.compare-table tbody td::before {
+      content: attr(data-era);
+      display: block;
+      font-family: var(--sans);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-3);
+      margin-bottom: 2px;
+    }
+    table.compare-table tbody th { width: auto; }
+  }
+
+  /* ---------- WRITE PANEL (student response) ---------- */
+  .write-panel { padding: 36px 0; display: none; }
+  .write-panel.active { display: block; }
+
+  .prompts {
+    background: var(--paper);
+    border-left: 4px solid var(--accent);
+    padding: 24px 28px;
+    margin-bottom: 28px;
+    box-shadow: var(--shadow);
+  }
+  .prompts h2 {
+    font-family: var(--serif-display);
+    font-style: italic;
+    font-weight: 500;
+    margin: 0 0 12px;
+    font-size: 1.6rem;
+  }
+  .prompts ol { margin: 0; padding-left: 20px; }
+  .prompts li { margin-bottom: 10px; font-size: 16px; }
+  .prompts li::marker { color: var(--accent); font-family: var(--serif-display); font-style: italic; }
+
+  .response-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 320px);
+    gap: 24px;
+  }
+  @media (max-width: 880px) { .response-grid { grid-template-columns: 1fr; } }
+
+  .response-area {
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    box-shadow: var(--shadow);
+    padding: 24px;
+  }
+  .response-area label {
+    display: block;
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin-bottom: 10px;
+  }
+  textarea#essay {
+    width: 100%;
+    min-height: 360px;
+    background: transparent;
+    border: 1px dashed var(--paper-edge);
+    padding: 16px;
+    font-family: var(--serif-body);
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink);
+    resize: vertical;
+    border-radius: 2px;
+  }
+  textarea#essay:focus { border-style: solid; border-color: var(--accent); outline: none; }
+
+  .essay-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 14px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .word-count {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink-soft);
+  }
+  .essay-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+  .btn {
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 10px 18px;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    min-height: 44px;
+    border-radius: 2px;
+    transition: transform 0.15s, background 0.2s;
+  }
+  .btn:hover { background: var(--accent); transform: translateY(-1px); }
+  .btn.secondary { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+  .btn.secondary:hover { background: var(--paper-edge); color: var(--ink); transform: translateY(-1px); }
+
+  /* analysis sidecar */
+  .essay-meta {
+    background: var(--paper);
+    border: 1px solid var(--paper-edge);
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+    align-self: start;
+    position: sticky;
+    top: 16px;
+  }
+  .essay-meta h3 {
+    font-family: var(--sans);
+    font-size: 11px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: var(--accent-2);
+    margin: 0 0 14px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 6px;
+  }
+
+  .live-stats { display: grid; gap: 4px; }
+  .live-stats .stat-row { font-size: 13px; }
+
+  .verdict {
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px dotted var(--paper-edge);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-soft);
+    min-height: 40px;
+  }
+
+  /* save toast */
+  .toast {
+    position: fixed;
+    bottom: 24px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--ink);
+    color: var(--paper);
+    padding: 12px 22px;
+    border-radius: 2px;
+    font-family: var(--sans);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+    transition: transform 0.3s ease;
+    z-index: 100;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ---------- TOP-LEVEL VIEW SWITCHER ---------- */
+  .view-switcher {
+    display: flex;
+    gap: 0;
+    margin: 0 0 0;
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+    width: fit-content;
+    margin: 0 auto 24px;
+  }
+  .view-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 22px;
+    font-family: var(--sans);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    cursor: pointer;
+    min-height: 44px;
+    border-right: 1px solid var(--rule);
+    transition: all 0.2s;
+  }
+  .view-btn:last-child { border-right: none; }
+  .view-btn:hover { background: var(--paper-edge); color: var(--ink); }
+  .view-btn[aria-pressed="true"] {
+    background: var(--ink);
+    color: var(--paper);
+  }
+
+  footer {
+    text-align: center;
+    padding: 32px 24px;
+    border-top: 1px solid var(--rule);
+    margin-top: 48px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-soft);
+    letter-spacing: 0.05em;
+  }
+  footer .ornament { margin-bottom: 12px; }
+
+  /* utility */
+  .visually-hidden {
+    position: absolute !important;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden; clip: rect(0,0,0,0);
+    white-space: nowrap; border: 0;
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to main content</a>
+
+<header class="masthead">
+  <div class="eyebrow">A Course in Comparative Composition</div>
+  <h1>Three Centuries of <em>English Prose</em></h1>
+  <div class="ornament">❦ &nbsp; ✦ &nbsp; ❦</div>
+  <p class="subtitle">Read the passages. Probe their rhetorical machinery. Then write your own analysis—and watch the system judge whether your prose tilts Augustan, Romantic, Modernist, or distinctly contemporary.</p>
+  <aside class="professor-note">
+    <strong>From your instructor:</strong> Each tab below presents an authentic passage from a major work of English prose. Toggle the highlights to surface diction patterns, sentence shapes, and rhetorical gestures characteristic of its age. The fourth tab puts all four eras (including our own) into a single comparative grid. The final tab is yours.
+  </aside>
+</header>
+
+<main id="main">
+
+  <div class="view-switcher" role="tablist" aria-label="View selector">
+    <button class="view-btn" role="tab" aria-pressed="true" data-view="read">Read &amp; Analyze</button>
+    <button class="view-btn" role="tab" aria-pressed="false" data-view="compare">Comparative Grid</button>
+    <button class="view-btn" role="tab" aria-pressed="false" data-view="write">Your Response</button>
+  </div>
+
+  <!-- READ VIEW -->
+  <section id="view-read" aria-label="Reading and analysis">
+    <div class="era-tabs" role="tablist" aria-label="Choose a passage">
+      <button class="era-tab" role="tab" id="tab-1755" aria-controls="panel-1755" aria-selected="true" tabindex="0" data-era="1755">
+        <span class="tab-year">1755 · Augustan</span>
+        <span class="tab-title">A Dictionary of the English Language</span>
+        <span class="tab-author">Samuel Johnson</span>
+      </button>
+      <button class="era-tab" role="tab" id="tab-1854" aria-controls="panel-1854" aria-selected="false" tabindex="-1" data-era="1854">
+        <span class="tab-year">1854 · Romantic</span>
+        <span class="tab-title">Walden</span>
+        <span class="tab-author">Henry David Thoreau</span>
+      </button>
+      <button class="era-tab" role="tab" id="tab-1929" aria-controls="panel-1929" aria-selected="false" tabindex="-1" data-era="1929">
+        <span class="tab-year">1929 · Modernist</span>
+        <span class="tab-title">A Room of One's Own</span>
+        <span class="tab-author">Virginia Woolf</span>
+      </button>
+    </div>
+
+    <!-- PANEL 1755 -->
+    <article id="panel-1755" class="era-panel active" role="tabpanel" aria-labelledby="tab-1755">
+      <div class="era-grid">
+        <div class="passage">
+          <div class="passage-header">
+            <h2 class="work">Preface to <em>A Dictionary of the English Language</em></h2>
+            <div class="meta">Samuel Johnson · London · 1755</div>
+          </div>
+          <div class="passage-text" id="text-1755">
+            <p><span class="feature" data-kind="long-sentence">It is the fate of those who toil at the lower employments of life, to be rather driven by the fear of evil, than attracted by the prospect of good; to be exposed to censure, without hope of praise; to be disgraced by miscarriage, or punished for neglect, where success would have been without applause, and diligence without reward.</span></p>
+            <p><span class="feature" data-kind="long-sentence">Among these unhappy mortals is the writer of dictionaries; whom mankind have considered, not as the pupil, but the slave of science, the pioneer of literature, doomed only to remove rubbish and clear obstructions from the paths through which Learning and Genius press forward to conquest and glory, without bestowing a smile on the humble drudge that facilitates their progress.</span> Every other authour may aspire to praise; the lexicographer can only hope to escape reproach, and even this <span class="feature" data-kind="latinate">negative recompense</span> has been yet granted to very few.</p>
+            <p>I have, notwithstanding this discouragement, attempted a <span class="feature" data-kind="latinate">dictionary</span> of the English language, which, while it was employed in the cultivation of every species of <span class="feature" data-kind="latinate">literature</span>, has itself been hitherto neglected, suffered to spread, under the direction of chance, into wild <span class="feature" data-kind="parallelism">exuberance</span>, resigned to the tyranny of time and fashion, and exposed to the corruptions of <span class="feature" data-kind="parallelism">ignorance</span>, and caprices of <span class="feature" data-kind="parallelism">innovation</span>.</p>
+            <p>When I took the first survey of my undertaking, I found our speech copious without order, and energetick without rules: wherever I turned my view, there was perplexity to be disentangled, and confusion to be regulated; choice was to be made out of <span class="feature" data-kind="parallelism">boundless variety</span>, without any established principle of selection; <span class="feature" data-kind="latinate">adulterations</span> were to be detected, without a settled test of <span class="feature" data-kind="latinate">purity</span>; and <span class="feature" data-kind="latinate">modes of expression</span> to be rejected or received, without the suffrages of any writers of classical reputation or acknowledged authority.</p>
+          </div>
+        </div>
+
+        <aside class="analysis" aria-label="Analysis of the 1755 passage">
+          <h3>At a Glance</h3>
+          <div class="stat-row"><span class="label">Era</span><span class="value">Augustan / Neoclassical</span></div>
+          <div class="stat-row"><span class="label">Avg. sentence</span><span class="value">~58 words</span></div>
+          <div class="stat-row"><span class="label">Diction</span><span class="value">Latinate, formal</span></div>
+          <div class="stat-row"><span class="label">Voice</span><span class="value">Public, declarative</span></div>
+          <div class="stat-row"><span class="label">Audience</span><span class="value">Educated gentlemen</span></div>
+
+          <h3>Highlight a Feature</h3>
+          <div class="feature-toggles" data-target="text-1755">
+            <button class="feature-toggle" aria-pressed="false" data-kind="long-sentence">Periodic sentences</button>
+            <button class="feature-toggle" aria-pressed="false" data-kind="parallelism">Parallel structure</button>
+            <button class="feature-toggle" aria-pressed="false" data-kind="latinate">Latinate diction</button>
+          </div>
+
+          <h3>What to Notice</h3>
+          <div class="style-notes">
+            <p><strong>Architecture.</strong> Johnson constructs <em>periodic sentences</em>—long suspended structures whose meaning resolves only at the end. The first sentence stretches more than 50 words across a colon and four parallel infinitive phrases.</p>
+            <p><strong>Symmetry.</strong> Watch for paired oppositions: <em>fear of evil / prospect of good</em>; <em>censure / praise</em>; <em>success / applause</em>. This balanced antithesis is the signature of the Augustan plain style.</p>
+            <p><strong>Diction.</strong> Latinate vocabulary (<em>recompense, exuberance, adulterations, suffrages</em>) signals learned authority. Spelling such as <em>energetick</em> and <em>authour</em> belongs to the period.</p>
+            <p><strong>Stance.</strong> The writer speaks as a public servant addressing a literate nation. Pathos is muted; reason and decorum dominate.</p>
+          </div>
+        </aside>
+      </div>
+    </article>
+
+    <!-- PANEL 1854 -->
+    <article id="panel-1854" class="era-panel" role="tabpanel" aria-labelledby="tab-1854" hidden>
+      <div class="era-grid">
+        <div class="passage">
+          <div class="passage-header">
+            <h2 class="work"><em>Walden; or, Life in the Woods</em></h2>
+            <div class="meta">Henry David Thoreau · Massachusetts · 1854</div>
+          </div>
+          <div class="passage-text" id="text-1854">
+            <p><span class="feature" data-kind="aphorism">I went to the woods because I wished to live deliberately, to front only the essential facts of life, and see if I could not learn what it had to teach, and not, when I came to die, discover that I had not lived.</span> I did not wish to live what was not life, living is so dear; nor did I wish to practise <span class="feature" data-kind="aphorism">resignation, unless it was quite necessary</span>. I wanted to live deep and suck out all the marrow of life, to live so sturdily and Spartan-like as to put to rout all that was not life, to cut a broad swath and shave close, to drive life into a corner, and reduce it to its lowest terms.</p>
+            <p>Our life is frittered away by detail. <span class="feature" data-kind="aphorism">Simplicity, simplicity, simplicity!</span> I say, let your affairs be as two or three, and not a hundred or a thousand; instead of a million count half a dozen, and keep your accounts on your thumb-nail.</p>
+            <p>Why should we live with such hurry and waste of life? We are determined to be starved before we are hungry. Men say that <span class="feature" data-kind="sensory">a stitch in time saves nine</span>, and so they take a thousand stitches to-day to save nine to-morrow. As for work, we haven't any of any consequence. We have the <span class="feature" data-kind="sensory">Saint Vitus' dance</span>, and cannot possibly keep our heads still.</p>
+            <p>Let us settle ourselves, and work and wedge our feet downward through the <span class="feature" data-kind="sensory">mud and slush of opinion, and prejudice, and tradition, and delusion, and appearance</span>, that alluvion which covers the globe, through Paris and London, through New York and Boston and Concord, through church and state, through poetry and philosophy and religion, till we come to a hard bottom and rocks in place, which we can call <span class="feature" data-kind="firstperson">reality</span>, and say, This is, and no mistake.</p>
+          </div>
+        </div>
+
+        <aside class="analysis" aria-label="Analysis of the 1854 passage">
+          <h3>At a Glance</h3>
+          <div class="stat-row"><span class="label">Era</span><span class="value">Romantic / Transcendentalist</span></div>
+          <div class="stat-row"><span class="label">Avg. sentence</span><span class="value">~24 words</span></div>
+          <div class="stat-row"><span class="label">Diction</span><span class="value">Anglo-Saxon, sensory</span></div>
+          <div class="stat-row"><span class="label">Voice</span><span class="value">Personal, prophetic</span></div>
+          <div class="stat-row"><span class="label">Audience</span><span class="value">The reader as moral peer</span></div>
+
+          <h3>Highlight a Feature</h3>
+          <div class="feature-toggles" data-target="text-1854">
+            <button class="feature-toggle" aria-pressed="false" data-kind="aphorism">Aphorism</button>
+            <button class="feature-toggle" aria-pressed="false" data-kind="sensory">Concrete imagery</button>
+            <button class="feature-toggle" aria-pressed="false" data-kind="firstperson">First-person stance</button>
+          </div>
+
+          <h3>What to Notice</h3>
+          <div class="style-notes">
+            <p><strong>The "I" arrives.</strong> Where Johnson speaks <em>for</em> a public, Thoreau speaks <em>as</em> himself. The first word of the passage is <em>I</em>—unthinkable in a 1755 dedication.</p>
+            <p><strong>Concrete over abstract.</strong> Latinate abstractions yield to working verbs and physical things: <em>suck out the marrow, cut a broad swath, mud and slush, hard bottom, rocks in place</em>. Words you can taste.</p>
+            <p><strong>Aphorism as engine.</strong> Thoreau condenses moral argument into single quotable lines: <em>"Simplicity, simplicity, simplicity!"</em> The cadence is biblical, the syntax is American.</p>
+            <p><strong>Cataloguing rhythm.</strong> Like Whitman a year later, Thoreau accumulates: <em>through Paris and London, through New York and Boston and Concord, through church and state…</em> The list itself is the argument.</p>
+          </div>
+        </aside>
+      </div>
+    </article>
+
+    <!-- PANEL 1929 -->
+    <article id="panel-1929" class="era-panel" role="tabpanel" aria-labelledby="tab-1929" hidden>
+      <div class="era-grid">
+        <div class="passage">
+          <div class="passage-header">
+            <h2 class="work"><em>A Room of One's Own</em></h2>
+            <div class="meta">Virginia Woolf · London · 1929</div>
+          </div>
+          <div class="passage-text" id="text-1929">
+            <p><span class="feature" data-kind="conversational">But, you may say, we asked you to speak about women and fiction—what has that got to do with a room of one's own?</span> I will try to explain. When you asked me to speak about women and fiction I sat down on the banks of a river and began to wonder what the words meant.</p>
+            <p>They might mean simply a few remarks about <span class="feature" data-kind="conversational">Fanny Burney</span>; a few more about Jane Austen; a tribute to the Brontës and a sketch of Haworth Parsonage under snow; some witticisms if possible about Miss Mitford; a respectful allusion to George Eliot; a reference to Mrs. Gaskell and one would have done. But at second sight the words seemed not so simple. <span class="feature" data-kind="hedging">The title women and fiction might mean, and you may have meant it to mean, women and what they are like</span>; or it might mean women and the fiction that they write; or it might mean women and the fiction that is written about them; or it might mean that somehow all three are inextricably mixed together and you want me to consider them in that light.</p>
+            <p>But when I began to consider the subject in this last way, which seemed the most interesting, I soon saw that it had one fatal drawback. <span class="feature" data-kind="hedging">I should never be able to come to a conclusion.</span> I should never be able to fulfil what is, I understand, the first duty of a lecturer—to hand you after an hour's discourse a nugget of pure truth to wrap up between the pages of your notebooks and keep on the mantelpiece for ever. <span class="feature" data-kind="interior">All I could do was to offer you an opinion upon one minor point</span>—a woman must have money and a room of her own if she is to write fiction; and that, as you will see, leaves the great problem of the true nature of woman and the true nature of fiction unsolved.</p>
+            <p><span class="feature" data-kind="interior">I have shirked the duty of coming to a conclusion upon these two questions—women and fiction remain, so far as I am concerned, unsolved problems.</span> But in order to make some amends I am going to do what I can to show you how I arrived at this opinion about the room and the money.</p>
+          </div>
+        </div>
+
+        <aside class="analysis" aria-label="Analysis of the 1929 passage">
+          <h3>At a Glance</h3>
+          <div class="stat-row"><span class="label">Era</span><span class="value">Modernist</span></div>
+          <div class="stat-row"><span class="label">Avg. sentence</span><span class="value">~22 words (highly variable)</span></div>
+          <div class="stat-row"><span class="label">Diction</span><span class="value">Mixed register, conversational</span></div>
+          <div class="stat-row"><span class="label">Voice</span><span class="value">Inner monologue, ironic</span></div>
+          <div class="stat-row"><span class="label">Audience</span><span class="value">Listener addressed directly</span></div>
+
+          <h3>Highlight a Feature</h3>
+          <div class="feature-toggles" data-target="text-1929">
+            <button class="feature-toggle" aria-pressed="false" data-kind="conversational">Direct address</button>
+            <button class="feature-toggle" aria-pressed="false" data-kind="hedging">Provisional thinking</button>
+            <button class="feature-toggle" aria-pressed="false" data-kind="interior">Self-aware interior voice</button>
+          </div>
+
+          <h3>What to Notice</h3>
+          <div class="style-notes">
+            <p><strong>You-and-I.</strong> Woolf opens with a colloquial protest in the second person—<em>"But, you may say…"</em>—folding the audience into the prose. Compare Johnson, who never once acknowledges a "you."</p>
+            <p><strong>Thinking on the page.</strong> The clauses chain by <em>or it might mean… or it might mean…</em>, modeling the mind in motion rather than presenting a finished thesis. Modernism foregrounds process.</p>
+            <p><strong>Ironic deference.</strong> Phrases such as <em>"I have shirked the duty"</em> and <em>"a nugget of pure truth"</em> mock the lecturer-as-authority pose Johnson would have taken in earnest.</p>
+            <p><strong>Sentence elasticity.</strong> A 7-word sentence (<em>I will try to explain.</em>) sits beside a 60-word one. Rhythm becomes a tool of consciousness, not decorum.</p>
+          </div>
+        </aside>
+      </div>
+    </article>
+  </section>
+
+  <!-- COMPARE VIEW -->
+  <section id="view-compare" class="compare-panel" aria-label="Comparative grid" hidden>
+    <div class="compare-controls">
+      <span>Side-by-side rhetorical anatomy</span>
+      <span style="font-style:italic;font-family:var(--serif-body);text-transform:none;letter-spacing:0">Tap any row to focus.</span>
+    </div>
+
+    <table class="compare-table">
+      <thead>
+        <tr>
+          <th scope="col">Dimension</th>
+          <th scope="col"><span class="yr">1755</span>Johnson</th>
+          <th scope="col"><span class="yr">1854</span>Thoreau</th>
+          <th scope="col"><span class="yr">1929</span>Woolf</th>
+          <th scope="col"><span class="yr">Today</span>Contemporary</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Sentence length</th>
+          <td data-era="Johnson">Long, periodic; suspended meaning until the close. ~50–80 words common.</td>
+          <td data-era="Thoreau">Mid-length, declarative, often punctuated by a short aphoristic stab.</td>
+          <td data-era="Woolf">Wildly variable—a 7-word jab beside a 60-word reverie.</td>
+          <td data-era="Today">Short. Often fragmentary. Driven by readability scores and screen scanning.</td>
+        </tr>
+        <tr>
+          <th scope="row">Diction</th>
+          <td data-era="Johnson">Latinate, polysyllabic (<em>exuberance, adulterations, suffrages</em>).</td>
+          <td data-era="Thoreau">Anglo-Saxon, concrete, physical (<em>marrow, mud, slush, rocks</em>).</td>
+          <td data-era="Woolf">Plain register braided with literary allusion; uses the everyday word.</td>
+          <td data-era="Today">Conversational, often colloquial; jargon when domain-specific. Emojis function as punctuation.</td>
+        </tr>
+        <tr>
+          <th scope="row">Voice / stance</th>
+          <td data-era="Johnson">Public, magisterial, third-person formality even when "I" appears.</td>
+          <td data-era="Thoreau">First-person prophet; the self as moral instrument.</td>
+          <td data-era="Woolf">First-person but plural—the mind narrating itself thinking.</td>
+          <td data-era="Today">First-person intimate, often confessional. Personal brand as ethos.</td>
+        </tr>
+        <tr>
+          <th scope="row">Relation to reader</th>
+          <td data-era="Johnson">Reader is the educated public addressed at a remove.</td>
+          <td data-era="Thoreau">Reader is a moral peer being challenged.</td>
+          <td data-era="Woolf">Reader is a listener in the room, addressed as <em>you</em>.</td>
+          <td data-era="Today">Reader is a scrolling participant—skimming, replying, reposting.</td>
+        </tr>
+        <tr>
+          <th scope="row">Argument shape</th>
+          <td data-era="Johnson">Symmetrical, balanced antithesis. Reason and decorum.</td>
+          <td data-era="Thoreau">Aphoristic; argument carried by image and cadence.</td>
+          <td data-era="Woolf">Provisional, branching, self-questioning ("or it might mean…").</td>
+          <td data-era="Today">Hook → claim → evidence → CTA. Optimized for retention curves.</td>
+        </tr>
+        <tr>
+          <th scope="row">Punctuation</th>
+          <td data-era="Johnson">Semicolons and colons orchestrate long periods.</td>
+          <td data-era="Thoreau">Em-dashes and exclamations for emphasis.</td>
+          <td data-era="Woolf">Dashes and parentheses model the mind's interruptions.</td>
+          <td data-era="Today">Periods used for emphasis. Line breaks. Like this.</td>
+        </tr>
+        <tr>
+          <th scope="row">Material medium</th>
+          <td data-era="Johnson">Quarto folio, read aloud and quoted in print culture.</td>
+          <td data-era="Thoreau">Octavo book; private reading by lamplight.</td>
+          <td data-era="Woolf">Lecture, then paperback; the radio age is dawning.</td>
+          <td data-era="Today">Phone screen; algorithmic feed; voice notes and posts.</td>
+        </tr>
+        <tr>
+          <th scope="row">Implicit virtue</th>
+          <td data-era="Johnson">Decorum, learning, civic stewardship of language.</td>
+          <td data-era="Thoreau">Sincerity, deliberateness, individual conscience.</td>
+          <td data-era="Woolf">Honesty about uncertainty; the courage to think aloud.</td>
+          <td data-era="Today">Authenticity, accessibility, brevity, relatability.</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- WRITE VIEW -->
+  <section id="view-write" class="write-panel" aria-label="Your written response" hidden>
+    <div class="prompts">
+      <h2>Your Assignment</h2>
+      <p style="margin:0 0 12px;color:var(--ink-soft);font-size:14.5px;">Choose ONE of the prompts below. Aim for 350–600 words. Your response is saved automatically to this browser; nothing leaves your device.</p>
+      <ol>
+        <li>Compare Johnson, Thoreau, and Woolf on a single dimension (sentence length, diction, or relation to the reader). Then argue what contemporary prose has gained—and lost—relative to each.</li>
+        <li>Rewrite Thoreau's first paragraph in the voice of a 2026 personal essay. What disappears? What is impossible to translate?</li>
+        <li>Take a thread you have posted on social media in the last month. Diagnose its style using the categories on the comparative grid. Which century does it most resemble, and why?</li>
+      </ol>
+    </div>
+
+    <div class="response-grid">
+      <div class="response-area">
+        <label for="essay">Your Response</label>
+        <textarea id="essay" placeholder="Begin writing here. The system will analyze your prose in real time and tell you which century it most resembles…"></textarea>
+        <div class="essay-toolbar">
+          <span class="word-count" id="wordCount">0 words · 0 characters</span>
+          <div class="essay-buttons">
+            <button class="btn secondary" id="clearBtn" type="button">Clear</button>
+            <button class="btn secondary" id="downloadBtn" type="button">Download .txt</button>
+            <button class="btn" id="saveBtn" type="button">Save Locally</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="essay-meta">
+        <h3>Live Style Analysis</h3>
+        <div class="live-stats">
+          <div class="stat-row"><span class="label">Sentences</span><span class="value" id="sentCount">—</span></div>
+          <div class="stat-row"><span class="label">Avg. sentence length</span><span class="value" id="avgLen">—</span></div>
+          <div class="stat-row"><span class="label">Longest sentence</span><span class="value" id="maxLen">—</span></div>
+          <div class="stat-row"><span class="label">Latinate ratio</span><span class="value" id="latinRatio">—</span></div>
+          <div class="stat-row"><span class="label">First-person rate</span><span class="value" id="firstPerson">—</span></div>
+          <div class="stat-row"><span class="label">Reader address</span><span class="value" id="youCount">—</span></div>
+          <div class="stat-row"><span class="label">Semicolons</span><span class="value" id="semis">—</span></div>
+        </div>
+        <div class="verdict" id="verdict">Begin typing to see how your prose registers across the four eras.</div>
+      </aside>
+    </div>
+  </section>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<footer>
+  <div class="ornament">❦ &nbsp; ✦ &nbsp; ❦</div>
+  <p>A Course in Comparative Composition · Three Centuries of English Prose · 2026</p>
+  <p style="margin-top:6px;">All passages are in the public domain. Save your response often; data is stored only in your browser.</p>
+</footer>
+
+<script>
+(function () {
+  'use strict';
+
+  // ---------- TOP-LEVEL VIEW SWITCHER ----------
+  var viewBtns = document.querySelectorAll('.view-btn');
+  var views = {
+    read: document.getElementById('view-read'),
+    compare: document.getElementById('view-compare'),
+    write: document.getElementById('view-write')
+  };
+  function showView(name) {
+    Object.keys(views).forEach(function (k) {
+      var el = views[k];
+      if (k === name) {
+        el.hidden = false;
+        el.classList.add('active');
+      } else {
+        el.hidden = true;
+        el.classList.remove('active');
+      }
+    });
+    viewBtns.forEach(function (b) {
+      b.setAttribute('aria-pressed', b.dataset.view === name ? 'true' : 'false');
+    });
+  }
+  viewBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () { showView(btn.dataset.view); });
+  });
+
+  // ---------- ERA TABS ----------
+  var eraTabs = document.querySelectorAll('.era-tab');
+  var eraPanels = document.querySelectorAll('.era-panel');
+  function selectEra(year) {
+    eraTabs.forEach(function (t) {
+      var sel = t.dataset.era === year;
+      t.setAttribute('aria-selected', sel ? 'true' : 'false');
+      t.tabIndex = sel ? 0 : -1;
+    });
+    eraPanels.forEach(function (p) {
+      var match = p.id === 'panel-' + year;
+      p.classList.toggle('active', match);
+      p.hidden = !match;
+    });
+  }
+  eraTabs.forEach(function (tab) {
+    tab.addEventListener('click', function () { selectEra(tab.dataset.era); });
+    tab.addEventListener('keydown', function (e) {
+      var keys = ['ArrowLeft', 'ArrowRight', 'Home', 'End'];
+      if (keys.indexOf(e.key) === -1) return;
+      e.preventDefault();
+      var arr = Array.prototype.slice.call(eraTabs);
+      var i = arr.indexOf(tab);
+      var next = i;
+      if (e.key === 'ArrowLeft') next = (i - 1 + arr.length) % arr.length;
+      if (e.key === 'ArrowRight') next = (i + 1) % arr.length;
+      if (e.key === 'Home') next = 0;
+      if (e.key === 'End') next = arr.length - 1;
+      arr[next].focus();
+      selectEra(arr[next].dataset.era);
+    });
+  });
+
+  // ---------- FEATURE HIGHLIGHTERS ----------
+  document.querySelectorAll('.feature-toggles').forEach(function (group) {
+    var targetId = group.dataset.target;
+    var target = document.getElementById(targetId);
+    group.querySelectorAll('.feature-toggle').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var pressed = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', pressed ? 'false' : 'true');
+        var kind = btn.dataset.kind;
+        target.querySelectorAll('.feature[data-kind="' + kind + '"]').forEach(function (s) {
+          s.classList.toggle('lit', !pressed);
+        });
+      });
+    });
+  });
+
+  // ---------- LIVE STYLE ANALYSIS ----------
+  // a small Latinate / polysyllabic suffix list — heuristic, not exhaustive
+  var LATIN_SUFFIXES = [
+    'tion', 'sion', 'ment', 'ence', 'ance', 'ity', 'ive', 'ous',
+    'ate', 'ize', 'ise', 'ical', 'ible', 'able', 'ude', 'ism', 'ology'
+  ];
+  function isLatinate(word) {
+    var w = word.toLowerCase();
+    if (w.length < 5) return false;
+    for (var i = 0; i < LATIN_SUFFIXES.length; i++) {
+      if (w.endsWith(LATIN_SUFFIXES[i])) return true;
+    }
+    // generous: words 9+ letters with vowel-heavy structure tend to be latinate
+    if (w.length >= 9) return true;
+    return false;
+  }
+
+  function analyze(text) {
+    var trimmed = text.trim();
+    if (!trimmed) return null;
+
+    // sentences via simple split on . ! ? followed by whitespace or end
+    var sentences = trimmed.split(/[.!?]+(?=\s|$)/).map(function (s) { return s.trim(); }).filter(Boolean);
+    var words = trimmed.match(/\b[\p{L}'-]+\b/gu) || [];
+    var wordCount = words.length;
+
+    var lenSum = 0, longest = 0;
+    sentences.forEach(function (s) {
+      var ws = (s.match(/\b[\p{L}'-]+\b/gu) || []).length;
+      lenSum += ws;
+      if (ws > longest) longest = ws;
+    });
+    var avg = sentences.length ? lenSum / sentences.length : 0;
+
+    var latinCount = 0, firstPersonCount = 0, youCount = 0;
+    var firstPersonRe = /^(i|me|my|mine|myself|we|us|our|ours)$/i;
+    var youRe = /^(you|your|yours|yourself|yourselves)$/i;
+    words.forEach(function (w) {
+      if (isLatinate(w)) latinCount++;
+      if (firstPersonRe.test(w)) firstPersonCount++;
+      if (youRe.test(w)) youCount++;
+    });
+
+    var semis = (trimmed.match(/;/g) || []).length;
+
+    return {
+      wordCount: wordCount,
+      charCount: text.length,
+      sentenceCount: sentences.length,
+      avgLen: avg,
+      longest: longest,
+      latinPct: wordCount ? (latinCount / wordCount) * 100 : 0,
+      firstPersonPct: wordCount ? (firstPersonCount / wordCount) * 100 : 0,
+      youPct: wordCount ? (youCount / wordCount) * 100 : 0,
+      semis: semis
+    };
+  }
+
+  function classifyEra(s) {
+    // produce a "score" toward each era, then pick the leader
+    var scores = { Johnson: 0, Thoreau: 0, Woolf: 0, Contemporary: 0 };
+    if (!s) return null;
+
+    // sentence length signals
+    if (s.avgLen >= 35) scores.Johnson += 3;
+    else if (s.avgLen >= 22) scores.Thoreau += 2;
+    else if (s.avgLen >= 16) scores.Woolf += 2;
+    else scores.Contemporary += 3;
+
+    // longest sentence (Johnson uses very long ones)
+    if (s.longest >= 60) scores.Johnson += 2;
+    if (s.longest >= 40 && s.longest < 60) scores.Woolf += 1;
+
+    // diction
+    if (s.latinPct >= 18) scores.Johnson += 3;
+    else if (s.latinPct >= 12) scores.Woolf += 1;
+    else if (s.latinPct < 7) scores.Thoreau += 2;
+
+    // first-person presence
+    if (s.firstPersonPct >= 6) scores.Thoreau += 2;
+    if (s.firstPersonPct >= 4 && s.firstPersonPct < 6) scores.Woolf += 1;
+    if (s.firstPersonPct < 1) scores.Johnson += 2;
+
+    // direct address ("you")
+    if (s.youPct >= 2.5) scores.Woolf += 2;
+    if (s.youPct >= 4) scores.Contemporary += 1;
+
+    // semicolon density (per 100 words)
+    var semisPer100 = s.wordCount ? (s.semis / s.wordCount) * 100 : 0;
+    if (semisPer100 >= 1.5) scores.Johnson += 2;
+    if (semisPer100 < 0.3 && s.wordCount > 80) scores.Contemporary += 1;
+
+    // pick leader
+    var winner = 'Contemporary', best = -1;
+    Object.keys(scores).forEach(function (k) {
+      if (scores[k] > best) { best = scores[k]; winner = k; }
+    });
+
+    // craft verdict text
+    var blurbs = {
+      Johnson: 'Your prose leans <strong>Augustan</strong>—long suspended sentences, formal Latinate diction, semicolons doing structural work. Johnson would approve; your readers may need a moment.',
+      Thoreau: 'Your prose tilts <strong>Romantic / Transcendentalist</strong>—a confident "I," concrete diction, declarative cadence. There is moral weather in your sentences.',
+      Woolf: 'Your prose registers <strong>Modernist</strong>—the rhythm shifts, the reader is addressed, qualifications and revisions are visible on the page. The mind is thinking, not pronouncing.',
+      Contemporary: 'Your prose reads as distinctly <strong>contemporary</strong>—short sentences, plain diction, low ceremony. Built for the screen and the scroll.'
+    };
+    return { winner: winner, scores: scores, verdict: blurbs[winner] };
+  }
+
+  function fmt(n, digits) { return Number(n).toFixed(digits == null ? 1 : digits); }
+
+  var essay = document.getElementById('essay');
+  var wordCountEl = document.getElementById('wordCount');
+  var sentCountEl = document.getElementById('sentCount');
+  var avgLenEl = document.getElementById('avgLen');
+  var maxLenEl = document.getElementById('maxLen');
+  var latinEl = document.getElementById('latinRatio');
+  var firstPersonEl = document.getElementById('firstPerson');
+  var youCountEl = document.getElementById('youCount');
+  var semisEl = document.getElementById('semis');
+  var verdictEl = document.getElementById('verdict');
+
+  function refresh() {
+    var s = analyze(essay.value);
+    if (!s) {
+      wordCountEl.textContent = '0 words · 0 characters';
+      sentCountEl.textContent = '—';
+      avgLenEl.textContent = '—';
+      maxLenEl.textContent = '—';
+      latinEl.textContent = '—';
+      firstPersonEl.textContent = '—';
+      youCountEl.textContent = '—';
+      semisEl.textContent = '—';
+      verdictEl.innerHTML = 'Begin typing to see how your prose registers across the four eras.';
+      return;
+    }
+    wordCountEl.textContent = s.wordCount + ' words · ' + s.charCount + ' characters';
+    sentCountEl.textContent = s.sentenceCount;
+    avgLenEl.textContent = fmt(s.avgLen, 1) + ' words';
+    maxLenEl.textContent = s.longest + ' words';
+    latinEl.textContent = fmt(s.latinPct, 1) + '%';
+    firstPersonEl.textContent = fmt(s.firstPersonPct, 1) + '%';
+    youCountEl.textContent = fmt(s.youPct, 1) + '%';
+    semisEl.textContent = s.semis;
+
+    if (s.wordCount < 30) {
+      verdictEl.innerHTML = '<em>Keep going—at least 30 words for a reading.</em>';
+    } else {
+      var c = classifyEra(s);
+      verdictEl.innerHTML = c.verdict;
+    }
+  }
+
+  // ---------- LOCAL STORAGE PERSISTENCE ----------
+  var STORAGE_KEY = 'three-centuries-prose-v1';
+  function safeGet() {
+    try { return localStorage.getItem(STORAGE_KEY); } catch (e) { return null; }
+  }
+  function safeSet(v) {
+    try { localStorage.setItem(STORAGE_KEY, v); return true; } catch (e) { return false; }
+  }
+  function safeRm() {
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* */ }
+  }
+
+  // restore
+  var stored = safeGet();
+  if (stored) essay.value = stored;
+  refresh();
+
+  // autosave on input (debounced) + live analysis
+  var saveTimer = null;
+  essay.addEventListener('input', function () {
+    refresh();
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(function () { safeSet(essay.value); }, 700);
+  });
+
+  // ---------- BUTTONS ----------
+  var toast = document.getElementById('toast');
+  function showToast(msg) {
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(function () { toast.classList.remove('show'); }, 1800);
+  }
+
+  document.getElementById('saveBtn').addEventListener('click', function () {
+    if (safeSet(essay.value)) showToast('Saved to this browser.');
+    else showToast('Could not save (storage unavailable).');
+  });
+
+  document.getElementById('clearBtn').addEventListener('click', function () {
+    if (!essay.value || confirm('Clear your response? This cannot be undone.')) {
+      essay.value = '';
+      safeRm();
+      refresh();
+      showToast('Cleared.');
+      essay.focus();
+    }
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', function () {
+    var text = essay.value || '';
+    if (!text.trim()) { showToast('Nothing to download yet.'); return; }
+    var blob = new Blob([text], { type: 'text/plain' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    var stamp = new Date().toISOString().slice(0, 10);
+    a.download = 'three-centuries-response-' + stamp + '.txt';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('Downloaded.');
+  });
+
+  // ---------- DEFAULT VIEW ----------
+  showView('read');
+})();
+</script>
+</body>
+</html>
