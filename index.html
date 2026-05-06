@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instructional Design Repository</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; }
+        .card:hover { transform: translateY(-5px); transition: all 0.3s ease; }
+    </style>
+</head>
+<body class="p-6 md:p-12">
+
+    <div class="max-w-6xl mx-auto">
+        <header class="mb-12 border-b border-slate-200 pb-8">
+            <h1 class="text-4xl font-extrabold text-slate-900 mb-2">Instructional Design Portfolio</h1>
+            <p class="text-lg text-slate-600">A collection of interactive web-based learning modules and administrative tools.</p>
+        </header>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            
+            <div class="card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4 text-blue-600 text-2xl">✍️</div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Three Centuries of Prose</h2>
+                    <p class="text-slate-600 text-sm mb-4">A comparative study of English composition from 1755 to today, featuring a live stylistic analysis engine.</p>
+                </div>
+                <a href="eng.html" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors">
+                    Launch Module
+                </a>
+            </div>
+
+            <div class="card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 bg-cyan-100 rounded-lg flex items-center justify-center mb-4 text-cyan-600 text-2xl">🌊</div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Deep Blue: Ocean Currents</h2>
+                    <p class="text-slate-600 text-sm mb-4">Interactive science lab exploring the Coriolis Effect and Thermohaline Circulation with particle simulations.</p>
+                </div>
+                <a href="ocean.html" class="block w-full text-center bg-cyan-600 hover:bg-cyan-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors">
+                    Launch Module
+                </a>
+            </div>
+
+            <div class="card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between">
+                <div>
+                    <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mb-4 text-indigo-600 text-2xl">⚖️</div>
+                    <h2 class="text-xl font-bold text-slate-800 mb-2">Academic Conduct Timeline</h2>
+                    <p class="text-slate-600 text-sm mb-4">A procedural investigation timeline for students and faculty, detailing the steps from allegation to final appeal.</p>
+                </div>
+                <a href="acad_integ.html" class="block w-full text-center bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-xl transition-colors">
+                    Launch Tool
+                </a>
+            </div>
+
+        </div>
+
+        <footer class="mt-20 pt-8 border-t border-slate-200 text-center text-slate-500 text-sm">
+            &copy; 2026 Instructional Design Repository &bull; Built with HTML5, CSS3, and JavaScript
+        </footer>
+    </div>
+
+</body>
+</html>
