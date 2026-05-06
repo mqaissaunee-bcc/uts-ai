@@ -8,19 +8,19 @@
 <style>
   /* ---------- TOKENS ---------- */
   :root {
-    /* parchment / library palette */
-    --bg: #f3ead8;
-    --bg-deep: #e8dcc0;
-    --ink: #1a1410;
-    --ink-soft: #4a3f33;
-    --rule: #8b6f47;
-    --accent: #8b1a1a;        /* crimson */
-    --accent-2: #1d4d3a;      /* forest */
-    --accent-3: #b8860b;      /* old gold */
-    --paper: #faf6ec;
-    --paper-edge: rgba(139, 111, 71, 0.25);
-    --highlight: rgba(184, 134, 11, 0.28);
-    --shadow: 0 1px 0 rgba(26, 20, 16, 0.06), 0 8px 24px -12px rgba(26, 20, 16, 0.25);
+    /* blue & white palette */
+    --bg: #f4f7fb;
+    --bg-deep: #e6eef7;
+    --ink: #0c1e3a;
+    --ink-soft: #44597a;
+    --rule: #5a7fb0;
+    --accent: #0a3d91;        /* deep navy */
+    --accent-2: #1565c0;      /* royal blue */
+    --accent-3: #4a90d9;      /* bright accent blue */
+    --paper: #ffffff;
+    --paper-edge: rgba(90, 127, 176, 0.22);
+    --highlight: rgba(74, 144, 217, 0.28);
+    --shadow: 0 1px 0 rgba(12, 30, 58, 0.04), 0 8px 24px -12px rgba(12, 30, 58, 0.22);
 
     --serif-display: 'Cormorant Garamond', 'Garamond', 'Hoefler Text', 'Goudy Old Style', 'Baskerville', serif;
     --serif-body: 'EB Garamond', 'Garamond', 'Hoefler Text', 'Iowan Old Style', 'Baskerville', Georgia, serif;
@@ -29,17 +29,17 @@
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #1a1612;
-      --bg-deep: #0f0c08;
-      --ink: #ede4d0;
-      --ink-soft: #b8ac95;
-      --rule: #8b6f47;
-      --accent: #d4654a;
-      --accent-2: #6ba588;
-      --accent-3: #d4a838;
-      --paper: #221d16;
-      --paper-edge: rgba(139, 111, 71, 0.4);
-      --highlight: rgba(212, 168, 56, 0.25);
+      --bg: #0a1628;
+      --bg-deep: #050d1a;
+      --ink: #f1f6fc;
+      --ink-soft: #a8bcd6;
+      --rule: #4a6890;
+      --accent: #6ea8ff;
+      --accent-2: #8cc0ff;
+      --accent-3: #4a90d9;
+      --paper: #11223d;
+      --paper-edge: rgba(110, 168, 255, 0.28);
+      --highlight: rgba(110, 168, 255, 0.22);
       --shadow: 0 1px 0 rgba(0,0,0,0.3), 0 12px 32px -12px rgba(0,0,0,0.6);
     }
   }
@@ -56,8 +56,8 @@
     margin: 0;
     background: var(--bg);
     background-image:
-      radial-gradient(circle at 15% 20%, rgba(139, 111, 71, 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 85% 70%, rgba(139, 26, 26, 0.06) 0%, transparent 50%);
+      radial-gradient(circle at 15% 20%, rgba(74, 144, 217, 0.10) 0%, transparent 45%),
+      radial-gradient(circle at 85% 70%, rgba(10, 61, 145, 0.08) 0%, transparent 50%);
     color: var(--ink);
     font-family: var(--serif-body);
     font-size: 18px;
