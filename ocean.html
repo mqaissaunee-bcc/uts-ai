@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deep Blue: Ocean Currents Interactive</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Lexend', sans-serif;
+            background-color: #f0f9ff;
+            color: #1e3a8a;
+            scroll-behavior: smooth;
+        }
+
+        .ocean-gradient {
+            background: linear-gradient(180deg, #0ea5e9 0%, #1e40af 100%);
+        }
+
+        .card {
+            background: white;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .interactive-area {
+            background: #000;
+            border-radius: 1rem;
+            position: relative;
+            overflow: hidden;
+            height: 400px;
+        }
+
+        .btn-primary {
+            background: #2563eb;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background: #1d4ed8;
+            transform: scale(1.05);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Lab 1 Animation */
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .coriolis-earth {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: radial-gradient(circle at 30% 30%, #3b82f6, #1e3a8a);
+            position: relative;
+            margin: auto;
+        }
+
+        /* Lab 2 Styles */
+        .water-tank {
+            width: 100%;
+            height: 200px;
+            background: #e0f2fe;
+            position: relative;
+            border: 4px solid #1e40af;
+        }
+
+        .particle {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .quiz-option {
+            border: 2px solid #e2e8f0;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .quiz-option:hover {
+            border-color: #3b82f6;
+            background: #eff6ff;
+        }
+
+        .correct { background-color: #dcfce7 !important; border-color: #22c55e !important; }
+        .wrong { background-color: #fee2e2 !important; border-color: #ef4444 !important; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <!-- Header -->
+    <header class="max-w-5xl mx-auto mb-12 text-center">
+        <h1 class="text-4xl md:text-6xl font-bold text-blue-900 mb-4">Deep Blue: Ocean Currents</h1>
+        <p class="text-xl text-blue-700">An Interactive Exploration for Earth's Future Scientists</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto">
+        
+        <!-- Navigation -->
+        <nav class="flex flex-wrap justify-center gap-4 mb-12">
+            <button onclick="showTab('intro')" class="tab-btn btn-primary">🌊 The Basics</button>
+            <button onclick="showTab('lab1')" class="tab-btn btn-primary">🌪️ Lab 1: Surface</button>
+            <button onclick="showTab('lab2')" class="tab-btn btn-primary">🌡️ Lab 2: Deep Sea</button>
+            <button onclick="showTab('quiz')" class="tab-btn btn-primary">🧠 Quiz Challenge</button>
+        </nav>
+
+        <!-- Tab 1: Intro -->
+        <section id="intro" class="tab-content active animate-fade-in">
+            <div class="card p-8 mb-8">
+                <h2 class="text-3xl font-bold mb-6">What are Ocean Currents?</h2>
+                <div class="grid md:grid-cols-2 gap-8 items-center">
+                    <div>
+                        <p class="text-lg leading-relaxed mb-4">
+                            Think of the ocean like a giant, moving highway. Instead of cars, it transports <strong>heat, nutrients, and organisms</strong> all around the planet.
+                        </p>
+                        <p class="text-lg leading-relaxed">
+                            There are two main types of "highways" in the ocean:
+                        </p>
+                        <ul class="list-disc ml-6 mt-4 space-y-2 text-lg">
+                            <li><span class="font-bold text-blue-600">Surface Currents:</span> Driven by wind and the Earth's rotation (top 10%).</li>
+                            <li><span class="font-bold text-indigo-800">Deep Currents:</span> Driven by density—a mix of temperature and salt (bottom 90%).</li>
+                        </ul>
+                    </div>
+                    <div class="bg-blue-100 p-6 rounded-2xl border-2 border-blue-200">
+                        <h3 class="font-bold text-xl mb-2 italic">Why do they matter?</h3>
+                        <p>Without these currents, the Equator would be way too hot for life, and the Poles would be completely frozen solid! The ocean acts like Earth's air conditioner.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 2: Lab 1 (Surface Currents) -->
+        <section id="lab1" class="tab-content">
+            <div class="card p-8">
+                <h2 class="text-3xl font-bold mb-2">Lab 1: The Coriolis Effect</h2>
+                <p class="text-gray-600 mb-6">The Earth rotates, but not all parts move at the same speed! This deflects winds and currents.</p>
+                
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="md:col-span-1 space-y-6">
+                        <div class="bg-blue-50 p-4 rounded-xl">
+                            <label class="block font-bold mb-2">Earth Rotation Speed</label>
+                            <input type="range" id="rotationSpeed" min="0" max="5" step="0.5" value="1" class="w-full">
+                            <div class="flex justify-between text-xs mt-1">
+                                <span>Stop</span>
+                                <span>Normal</span>
+                                <span>Super Fast</span>
+                            </div>
+                        </div>
+                        <button onclick="fireParticle()" class="w-full bg-orange-500 hover:bg-orange-600 text-white font-bold py-3 rounded-lg shadow-lg">
+                            Launch Surface Current 🚀
+                        </button>
+                        <p class="text-sm text-gray-500">
+                            <strong>Challenge:</strong> Launch a current from the Equator. Does it go straight? Increase the rotation speed—what happens to the curve?
+                        </p>
+                    </div>
+
+                    <div class="md:col-span-2 interactive-area flex items-center justify-center bg-slate-900" id="coriolisCanvasContainer">
+                        <canvas id="coriolisCanvas" width="500" height="400"></canvas>
+                        <!-- Labels -->
+                        <div class="absolute top-2 left-1/2 -translate-x-1/2 text-white font-bold opacity-50">North Pole</div>
+                        <div class="absolute bottom-2 left-1/2 -translate-x-1/2 text-white font-bold opacity-50">South Pole</div>
+                        <div class="absolute top-1/2 w-full h-[2px] bg-white opacity-20 pointer-events-none"></div>
+                        <div class="absolute top-1/2 left-2 -translate-y-1/2 text-white text-[10px] opacity-40">Equator</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 3: Lab 2 (Deep Currents) -->
+        <section id="lab2" class="tab-content">
+            <div class="card p-8">
+                <h2 class="text-3xl font-bold mb-2">Lab 2: Thermohaline Circulation</h2>
+                <p class="text-gray-600 mb-6">"Thermo" (Temperature) + "Haline" (Salt). Let's see how density creates a "Conveyor Belt."</p>
+
+                <div class="grid md:grid-cols-4 gap-6 mb-8">
+                    <div class="card p-4 border-t-4 border-red-500">
+                        <h4 class="font-bold text-red-600">Equator</h4>
+                        <p class="text-sm">Hot sun warms the water. Warm water is <strong>less dense</strong>.</p>
+                        <button onclick="addWater('warm')" class="mt-2 text-xs bg-red-100 text-red-700 px-2 py-1 rounded">Add Warm Water</button>
+                    </div>
+                    <div class="card p-4 border-t-4 border-blue-500">
+                        <h4 class="font-bold text-blue-600">Poles</h4>
+                        <p class="text-sm">Cold air chills water. Cold water is <strong>more dense</strong>.</p>
+                        <button onclick="addWater('cold')" class="mt-2 text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded">Add Cold Water</button>
+                    </div>
+                    <div class="card p-4 border-t-4 border-orange-500">
+                        <h4 class="font-bold text-orange-600">Salt (Salinity)</h4>
+                        <p class="text-sm">Evaporation or sea ice leaves salt behind. Salty water <strong>sinks</strong>.</p>
+                        <button onclick="addWater('salty')" class="mt-2 text-xs bg-orange-100 text-orange-700 px-2 py-1 rounded">Add Salty Water</button>
+                    </div>
+                    <div class="card p-4 border-t-4 border-green-500">
+                        <h4 class="font-bold text-green-600">Freshwater</h4>
+                        <p class="text-sm">Melting glaciers add fresh water. It's <strong>less dense</strong> and floats.</p>
+                        <button onclick="addWater('fresh')" class="mt-2 text-xs bg-green-100 text-green-700 px-2 py-1 rounded">Add Fresh Water</button>
+                    </div>
+                </div>
+
+                <div class="water-tank rounded-xl overflow-hidden shadow-inner" id="tank">
+                    <!-- Particles will appear here -->
+                    <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                        <span class="text-blue-200 font-bold text-4xl opacity-20">DEEP OCEAN TANK</span>
+                    </div>
+                </div>
+                
+                <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                    <p class="text-sm"><strong>Observation:</strong> Watch how the "Cold" and "Salty" particles sink to the bottom. This is exactly what happens in the North Atlantic, starting the Global Conveyor Belt!</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tab 4: Quiz -->
+        <section id="quiz" class="tab-content">
+            <div class="card p-8">
+                <h2 class="text-3xl font-bold mb-6">Expert Challenge Quiz</h2>
+                <div id="quizContainer">
+                    <!-- Quiz JS will populate this -->
+                </div>
+                <div id="quizResults" class="hidden text-center mt-8 p-6 bg-blue-50 rounded-2xl">
+                    <h3 class="text-2xl font-bold mb-2">Great Job, Oceanographer!</h3>
+                    <p id="scoreText" class="text-xl"></p>
+                    <button onclick="resetQuiz()" class="mt-4 btn-primary">Try Again</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="max-w-5xl mx-auto mt-12 text-center text-gray-500 text-sm pb-12">
+        Created for the Next Generation of Scientists &bull; Explore. Learn. Protect.
+    </footer>
+
+    <script>
+        // Tab System
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            
+            // Re-init canvas if lab 1 is shown
+            if (tabId === 'lab1') {
+                initCoriolis();
+            }
+        }
+
+        // --- Lab 1: Coriolis Effect Logic ---
+        let canvas, ctx;
+        let particles = [];
+        let rotationAngle = 0;
+        let animationFrame;
+
+        function initCoriolis() {
+            canvas = document.getElementById('coriolisCanvas');
+            ctx = canvas.getContext('2d');
+            if (!animationFrame) animateCoriolis();
+        }
+
+        function fireParticle() {
+            // Start from center (equator)
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                vx: 0,
+                vy: -2, // Move North
+                color: '#fbbf24',
+                life: 150
+            });
+            particles.push({
+                x: canvas.width / 2,
+                y: canvas.height / 2,
+                vx: 0,
+                vy: 2, // Move South
+                color: '#fbbf24',
+                life: 150
+            });
+        }
+
+        function animateCoriolis() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const speed = parseFloat(document.getElementById('rotationSpeed').value);
+            
+            // Draw "Earth" Circle
+            ctx.beginPath();
+            ctx.arc(canvas.width/2, canvas.height/2, 180, 0, Math.PI*2);
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.stroke();
+
+            particles.forEach((p, index) => {
+                // Apply "Coriolis" Force based on rotation speed
+                // In Northern Hemisphere (y < height/2), deflect right
+                // In Southern Hemisphere (y > height/2), deflect left
+                if (p.y < canvas.height/2) {
+                    p.vx += (0.05 * speed);
+                } else {
+                    p.vx -= (0.05 * speed);
+                }
+
+                p.x += p.vx;
+                p.y += p.vy;
+                p.life--;
+
+                ctx.beginPath();
+                ctx.arc(p.x, p.y, 4, 0, Math.PI*2);
+                ctx.fillStyle = p.color;
+                ctx.fill();
+
+                if (p.life <= 0) particles.splice(index, 1);
+            });
+
+            animationFrame = requestAnimationFrame(animateCoriolis);
+        }
+
+        // --- Lab 2: Tank Logic ---
+        function addWater(type) {
+            const tank = document.getElementById('tank');
+            const colors = {
+                warm: '#f87171',
+                cold: '#3b82f6',
+                salty: '#fbbf24',
+                fresh: '#34d399'
+            };
+
+            for(let i=0; i<15; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.backgroundColor = colors[type];
+                p.style.left = Math.random() * 95 + '%';
+                
+                // Initial Y position
+                let y = 0;
+                let velocity = 0;
+                let targetY = 180; // Bottom
+
+                if (type === 'warm' || type === 'fresh') {
+                    y = 10;
+                    targetY = 20; // Float near top
+                } else {
+                    y = 10;
+                    targetY = 180; // Sink
+                }
+
+                p.style.top = y + 'px';
+                tank.appendChild(p);
+
+                // Simple Animation
+                let currentY = y;
+                const interval = setInterval(() => {
+                    if (Math.abs(currentY - targetY) < 1) {
+                        clearInterval(interval);
+                        setTimeout(() => p.remove(), 5000);
+                        return;
+                    }
+                    currentY += (targetY - currentY) * 0.05;
+                    p.style.top = currentY + 'px';
+                }, 30);
+            }
+        }
+
+        // --- Quiz Logic ---
+        const quizData = [
+            {
+                q: "What provides the energy to drive surface ocean currents?",
+                options: ["The Moon's Gravity", "Solar Heating and Wind", "Underwater Volcanoes", "Earthquakes"],
+                correct: 1
+            },
+            {
+                q: "The Coriolis Effect causes currents in the Northern Hemisphere to curve in which direction?",
+                options: ["Left", "Straight", "Right", "Downwards"],
+                correct: 2
+            },
+            {
+                q: "Which two factors most affect the density of ocean water?",
+                options: ["Color and Depth", "Fish and Plants", "Temperature and Salinity", "Wind and Sunlight"],
+                correct: 2
+            },
+            {
+                q: "What happens to water that is both very COLD and very SALTY?",
+                options: ["It evaporates immediately", "It sinks to the bottom", "It floats on the surface", "It turns into a whirlpool"],
+                correct: 1
+            },
+            {
+                q: "The Global Conveyor Belt is also known as what kind of circulation?",
+                options: ["Coriolis Circulation", "Hydro-Wind Motion", "Thermohaline Circulation", "Magnetic Reversal"],
+                correct: 2
+            }
+        ];
+
+        let currentQuestion = 0;
+        let score = 0;
+
+        function resetQuiz() {
+            currentQuestion = 0;
+            score = 0;
+            document.getElementById('quizResults').classList.add('hidden');
+            document.getElementById('quizContainer').classList.remove('hidden');
+            renderQuestion();
+        }
+
+        function renderQuestion() {
+            const container = document.getElementById('quizContainer');
+            const data = quizData[currentQuestion];
+            
+            container.innerHTML = `
+                <div class="mb-6">
+                    <span class="text-sm font-bold text-blue-500 uppercase tracking-widest">Question ${currentQuestion + 1} of ${quizData.length}</span>
+                    <h3 class="text-2xl font-semibold mt-2">${data.q}</h3>
+                </div>
+                <div class="grid gap-4">
+                    ${data.options.map((opt, i) => `
+                        <div onclick="checkAnswer(${i})" id="opt-${i}" class="quiz-option p-4 rounded-xl text-lg font-medium">
+                            ${opt}
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function checkAnswer(index) {
+            const data = quizData[currentQuestion];
+            const options = document.querySelectorAll('.quiz-option');
+            
+            // Disable clicks
+            options.forEach(opt => opt.style.pointerEvents = 'none');
+
+            if (index === data.correct) {
+                document.getElementById(`opt-${index}`).classList.add('correct');
+                score++;
+            } else {
+                document.getElementById(`opt-${index}`).classList.add('wrong');
+                document.getElementById(`opt-${data.correct}`).classList.add('correct');
+            }
+
+            setTimeout(() => {
+                currentQuestion++;
+                if (currentQuestion < quizData.length) {
+                    renderQuestion();
+                } else {
+                    showResults();
+                }
+            }, 1500);
+        }
+
+        function showResults() {
+            document.getElementById('quizContainer').classList.add('hidden');
+            const results = document.getElementById('quizResults');
+            results.classList.remove('hidden');
+            document.getElementById('scoreText').innerText = `You scored ${score} out of ${quizData.length}!`;
+        }
+
+        // Initialize first view
+        window.onload = () => {
+            renderQuestion();
+        };
+    </script>
+</body>
+</html>
