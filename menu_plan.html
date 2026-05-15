@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Menu Planning for Healthy Nutrition</title>
+  <style>
+    :root {
+      --navy: #1f3a5f;
+      --blue: #2f6690;
+      --green: #2e7d32;
+      --orange: #b55a00;
+      --cream: #fffaf0;
+      --light: #f5f7fa;
+      --white: #ffffff;
+      --gray: #4a4a4a;
+      --dark: #1f1f1f;
+      --border: #c9d3df;
+      --focus: #ffbf47;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.6;
+      color: var(--dark);
+      background: var(--light);
+    }
+
+    header {
+      background: var(--navy);
+      color: var(--white);
+      padding: 2rem 1rem;
+      text-align: center;
+    }
+
+    header h1 {
+      margin: 0 0 0.5rem;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+    }
+
+    header p {
+      max-width: 850px;
+      margin: 0 auto;
+      font-size: 1.1rem;
+    }
+
+    nav {
+      background: var(--white);
+      border-bottom: 2px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+
+    nav ul {
+      margin: 0;
+      padding: 0.5rem;
+      list-style: none;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+    }
+
+    nav a {
+      display: inline-block;
+      color: var(--navy);
+      text-decoration: none;
+      font-weight: bold;
+      padding: 0.55rem 0.8rem;
+      border-radius: 0.4rem;
+    }
+
+    nav a:hover,
+    nav a:focus {
+      background: var(--navy);
+      color: var(--white);
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    section {
+      background: var(--white);
+      margin: 1.25rem 0;
+      padding: 1.25rem;
+      border-radius: 0.75rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    h2 {
+      color: var(--navy);
+      margin-top: 0;
+    }
+
+    h3 {
+      color: var(--blue);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+
+    .card {
+      border: 1px solid var(--border);
+      border-left: 0.5rem solid var(--green);
+      padding: 1rem;
+      border-radius: 0.6rem;
+      background: var(--cream);
+    }
+
+    .callout {
+      background: #eef6ff;
+      border-left: 0.5rem solid var(--blue);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    .warning {
+      background: #fff4e6;
+      border-left: 0.5rem solid var(--orange);
+      padding: 1rem;
+      border-radius: 0.5rem;
+    }
+
+    button,
+    select,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      background: var(--navy);
+      color: var(--white);
+      border: none;
+      border-radius: 0.45rem;
+      padding: 0.65rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      margin: 0.25rem 0.25rem 0.25rem 0;
+    }
+
+    button:hover,
+    button:focus {
+      background: var(--blue);
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    label {
+      display: block;
+      font-weight: bold;
+      margin-top: 0.8rem;
+    }
+
+    select,
+    input[type="text"],
+    textarea {
+      width: 100%;
+      max-width: 650px;
+      padding: 0.65rem;
+      border: 2px solid var(--border);
+      border-radius: 0.45rem;
+      margin-top: 0.25rem;
+      background: var(--white);
+      color: var(--dark);
+    }
+
+    textarea {
+      min-height: 120px;
+    }
+
+    input[type="checkbox"] {
+      width: 1.15rem;
+      height: 1.15rem;
+      margin-right: 0.4rem;
+    }
+
+    .tooltip {
+      position: relative;
+      display: inline-block;
+      border-bottom: 2px dotted var(--blue);
+      color: var(--navy);
+      font-weight: bold;
+      cursor: help;
+    }
+
+    .tooltip:focus {
+      outline: 3px solid var(--focus);
+      outline-offset: 2px;
+    }
+
+    .tooltip .tooltip-text {
+      visibility: hidden;
+      opacity: 0;
+      width: min(280px, 80vw);
+      background: var(--dark);
+      color: var(--white);
+      text-align: left;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      position: absolute;
+      z-index: 20;
+      bottom: 130%;
+      left: 0;
+      transition: opacity 0.2s ease;
+      font-weight: normal;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+    }
+
+    .tooltip:hover .tooltip-text,
+    .tooltip:focus .tooltip-text {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .activity-box {
+      border: 2px dashed var(--blue);
+      border-radius: 0.75rem;
+      padding: 1rem;
+      margin-top: 1rem;
+      background: #fbfdff;
+    }
+
+    .meal-output {
+      margin-top: 1rem;
+      padding: 1rem;
+      background: #f0f8f0;
+      border: 1px solid #b6d7b6;
+      border-radius: 0.5rem;
+      min-height: 3rem;
+    }
+
+    .checklist li {
+      margin-bottom: 0.5rem;
+    }
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    th,
+    td {
+      border: 1px solid var(--border);
+      padding: 0.75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--navy);
+      color: var(--white);
+    }
+
+    footer {
+      text-align: center;
+      padding: 2rem 1rem;
+      color: var(--gray);
+    }
+
+    @media (max-width: 700px) {
+      nav {
+        position: static;
+      }
+
+      th,
+      td {
+        display: block;
+        width: 100%;
+      }
+
+      th {
+        margin-top: 0.75rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <a class="sr-only" href="#main-content">Skip to main content</a>
+
+  <header role="banner">
+    <h1>Menu Planning for Healthy Nutrition</h1>
+    <p>A community college health studies lesson focused on practical, affordable, balanced meal planning.</p>
+  </header>
+
+  <nav aria-label="Lesson navigation">
+    <ul>
+      <li><a href="#objectives">Objectives</a></li>
+      <li><a href="#keyterms">Key Terms</a></li>
+      <li><a href="#lesson">Mini Lesson</a></li>
+      <li><a href="#activities">Activities</a></li>
+      <li><a href="#assessment">Assessment</a></li>
+      <li><a href="#ada">ADA Score</a></li>
+    </ul>
+  </nav>
+
+  <main id="main-content" tabindex="-1">
+    <section id="objectives" aria-labelledby="objectives-heading">
+      <h2 id="objectives-heading">Learning Objectives</h2>
+      <p>By the end of this lesson, participants will be able to:</p>
+      <ul>
+        <li>Explain why menu planning supports health, budgeting, and time management.</li>
+        <li>Build a balanced one-day menu using food groups, portion awareness, and variety.</li>
+        <li>Adapt a menu for common dietary needs, preferences, and budget limits.</li>
+        <li>Evaluate a sample menu using a practical checklist.</li>
+      </ul>
+    </section>
+
+    <section id="keyterms" aria-labelledby="keyterms-heading">
+      <h2 id="keyterms-heading">Key Terms with Tooltips</h2>
+      <p>Hover over or tab to each term to view a quick explanation.</p>
+      <div class="grid">
+        <div class="card">
+          <p><span class="tooltip" tabindex="0">Menu planning<span class="tooltip-text">The process of deciding meals and snacks in advance based on nutrition needs, schedule, budget, and preferences.</span></span> helps reduce last-minute food choices.</p>
+        </div>
+        <div class="card">
+          <p><span class="tooltip" tabindex="0">Nutrient density<span class="tooltip-text">A measure of how many vitamins, minerals, fiber, or other beneficial nutrients a food provides compared with its calories.</span></span> favors foods that give more nutrition per bite.</p>
+        </div>
+        <div class="card">
+          <p><span class="tooltip" tabindex="0">Portion size<span class="tooltip-text">The amount of food a person chooses to eat at one time. It may be larger or smaller than a recommended serving.</span></span> affects total calorie and nutrient intake.</p>
+        </div>
+        <div class="card">
+          <p><span class="tooltip" tabindex="0">Macronutrients<span class="tooltip-text">Nutrients needed in larger amounts: carbohydrates, protein, and fat. Each plays a different role in energy, repair, and body function.</span></span> provide energy and structure.</p>
+        </div>
+        <div class="card">
+          <p><span class="tooltip" tabindex="0">Food security<span class="tooltip-text">Reliable access to enough affordable, nutritious food for an active and healthy life.</span></span> should be considered when planning realistic menus.</p>
+        </div>
+        <div class="card">
+          <p><span class="tooltip" tabindex="0">Meal prep<span class="tooltip-text">Preparing ingredients or meals ahead of time to make healthy eating easier during busy days.</span></span> saves time and reduces decision fatigue.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="lesson" aria-labelledby="lesson-heading">
+      <h2 id="lesson-heading">Mini Lesson: The 5-Part Menu Planning Method</h2>
+      <div class="grid">
+        <article class="card">
+          <h3>1. Start with the person</h3>
+          <p>Consider age, activity level, medical needs, culture, schedule, cooking skills, and budget.</p>
+        </article>
+        <article class="card">
+          <h3>2. Build around food groups</h3>
+          <p>Plan meals with fruits, vegetables, grains, protein foods, and dairy or calcium-rich alternatives.</p>
+        </article>
+        <article class="card">
+          <h3>3. Add variety</h3>
+          <p>Use different colors, textures, flavors, and preparation methods across the week.</p>
+        </article>
+        <article class="card">
+          <h3>4. Check practicality</h3>
+          <p>Ask: Is it affordable? Available? Easy enough? Does it fit the person’s schedule?</p>
+        </article>
+        <article class="card">
+          <h3>5. Reflect and revise</h3>
+          <p>Good menu planning is not perfection. It is a flexible plan that can be adjusted.</p>
+        </article>
+      </div>
+      <p class="callout"><strong>Instructor note:</strong> Emphasize that healthy planning should be realistic, culturally respectful, and budget-aware. Avoid framing food choices as “good” or “bad.” Instead, discuss balance, frequency, access, and context.</p>
+    </section>
+
+    <section id="activities" aria-labelledby="activities-heading">
+      <h2 id="activities-heading">Interactive Menu Planning Activities</h2>
+
+      <div class="activity-box" aria-labelledby="activity1-heading">
+        <h3 id="activity1-heading">Activity 1: Build a One-Day Menu</h3>
+        <p>Select one item for each meal. Then generate a sample day menu.</p>
+
+        <label for="breakfast">Breakfast</label>
+        <select id="breakfast">
+          <option value="Oatmeal with berries and milk">Oatmeal with berries and milk</option>
+          <option value="Egg and vegetable wrap">Egg and vegetable wrap</option>
+          <option value="Greek yogurt with fruit and granola">Greek yogurt with fruit and granola</option>
+          <option value="Peanut butter toast with banana">Peanut butter toast with banana</option>
+        </select>
+
+        <label for="lunch">Lunch</label>
+        <select id="lunch">
+          <option value="Turkey or hummus sandwich with side salad">Turkey or hummus sandwich with side salad</option>
+          <option value="Rice bowl with beans, vegetables, and salsa">Rice bowl with beans, vegetables, and salsa</option>
+          <option value="Chicken or tofu salad with whole-grain pita">Chicken or tofu salad with whole-grain pita</option>
+          <option value="Lentil soup with fruit and whole-grain crackers">Lentil soup with fruit and whole-grain crackers</option>
+        </select>
+
+        <label for="dinner">Dinner</label>
+        <select id="dinner">
+          <option value="Baked fish or tofu with brown rice and broccoli">Baked fish or tofu with brown rice and broccoli</option>
+          <option value="Whole-wheat pasta with vegetables and lean protein">Whole-wheat pasta with vegetables and lean protein</option>
+          <option value="Stir-fry vegetables with chicken, tofu, or beans">Stir-fry vegetables with chicken, tofu, or beans</option>
+          <option value="Vegetable chili with a small side salad">Vegetable chili with a small side salad</option>
+        </select>
+
+        <label for="snack">Snack</label>
+        <select id="snack">
+          <option value="Apple with peanut butter">Apple with peanut butter</option>
+          <option value="Carrots with hummus">Carrots with hummus</option>
+          <option value="Trail mix portion">Trail mix portion</option>
+          <option value="Cheese or dairy-free alternative with whole-grain crackers">Cheese or dairy-free alternative with whole-grain crackers</option>
+        </select>
+
+        <button type="button" onclick="buildMenu()">Generate My Menu</button>
+        <div id="menuOutput" class="meal-output" aria-live="polite">Your generated menu will appear here.</div>
+      </div>
+
+      <div class="activity-box" aria-labelledby="activity2-heading">
+        <h3 id="activity2-heading">Activity 2: Menu Quality Checklist</h3>
+        <p>Check each item that your menu includes.</p>
+        <ul class="checklist">
+          <li><label><input type="checkbox" class="menu-check" /> Includes at least one fruit</label></li>
+          <li><label><input type="checkbox" class="menu-check" /> Includes at least two vegetables</label></li>
+          <li><label><input type="checkbox" class="menu-check" /> Includes a whole grain</label></li>
+          <li><label><input type="checkbox" class="menu-check" /> Includes a protein source</label></li>
+          <li><label><input type="checkbox" class="menu-check" /> Includes water or a low-sugar beverage plan</label></li>
+          <li><label><input type="checkbox" class="menu-check" /> Fits the person’s budget and schedule</label></li>
+        </ul>
+        <button type="button" onclick="scoreChecklist()">Check My Menu Score</button>
+        <div id="checklistOutput" class="meal-output" aria-live="polite">Checklist score will appear here.</div>
+      </div>
+
+      <div class="activity-box" aria-labelledby="activity3-heading">
+        <h3 id="activity3-heading">Activity 3: Adapt the Menu</h3>
+        <p>Choose a scenario and discuss how the menu should be adjusted.</p>
+        <label for="scenario">Scenario</label>
+        <select id="scenario">
+          <option value="A student has limited time and needs grab-and-go meals.">A student has limited time and needs grab-and-go meals.</option>
+          <option value="A family is planning meals on a tight budget.">A family is planning meals on a tight budget.</option>
+          <option value="A patient needs to reduce sodium intake.">A patient needs to reduce sodium intake.</option>
+          <option value="A vegetarian student wants enough protein.">A vegetarian student wants enough protein.</option>
+          <option value="A person has limited cooking equipment.">A person has limited cooking equipment.</option>
+        </select>
+        <button type="button" onclick="showScenarioPrompt()">Show Discussion Prompt</button>
+        <div id="scenarioOutput" class="meal-output" aria-live="polite">Scenario prompt will appear here.</div>
+      </div>
+
+      <div class="activity-box" aria-labelledby="reflection-heading">
+        <h3 id="reflection-heading">Reflection</h3>
+        <label for="reflection">What is one realistic change you could make to improve a weekly menu?</label>
+        <textarea id="reflection" placeholder="Example: I could prepare vegetables ahead of time so I am more likely to use them during the week."></textarea>
+        <button type="button" onclick="saveReflection()">Save Reflection Locally</button>
+        <div id="reflectionOutput" class="meal-output" aria-live="polite">Reflection status will appear here.</div>
+      </div>
+    </section>
+
+    <section id="assessment" aria-labelledby="assessment-heading">
+      <h2 id="assessment-heading">Quick Knowledge Check</h2>
+      <form id="quizForm">
+        <fieldset>
+          <legend>1. Which is the best example of practical menu planning?</legend>
+          <label><input type="radio" name="q1" value="a" /> Choosing only the lowest-calorie foods every day</label>
+          <label><input type="radio" name="q1" value="b" /> Planning meals that fit nutrition needs, budget, schedule, and preferences</label>
+          <label><input type="radio" name="q1" value="c" /> Eating the same meal for every meal</label>
+        </fieldset>
+        <fieldset>
+          <legend>2. Why is variety important?</legend>
+          <label><input type="radio" name="q2" value="a" /> It helps provide different nutrients and keeps meals appealing</label>
+          <label><input type="radio" name="q2" value="b" /> It guarantees every meal is expensive</label>
+          <label><input type="radio" name="q2" value="c" /> It means every food must be organic</label>
+        </fieldset>
+        <button type="button" onclick="gradeQuiz()">Submit Knowledge Check</button>
+      </form>
+      <div id="quizOutput" class="meal-output" aria-live="polite">Quiz feedback will appear here.</div>
+    </section>
+
+    <section id="ada" aria-labelledby="ada-heading">
+      <h2 id="ada-heading">Accessibility / ADA Review</h2>
+      <p><strong>Estimated ADA/WCAG accessibility score: 92 / 100.</strong></p>
+      <table>
+        <caption>Accessibility features included in this application</caption>
+        <thead>
+          <tr>
+            <th scope="col">Feature</th>
+            <th scope="col">Included?</th>
+            <th scope="col">Notes</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Semantic HTML5 structure</td>
+            <td>Yes</td>
+            <td>Uses header, nav, main, section, article, footer, headings, fieldsets, and labels.</td>
+          </tr>
+          <tr>
+            <td>Keyboard navigation</td>
+            <td>Yes</td>
+            <td>Links, buttons, form controls, and tooltip terms are keyboard accessible.</td>
+          </tr>
+          <tr>
+            <td>Visible focus styles</td>
+            <td>Yes</td>
+            <td>High-visibility yellow focus outline is included.</td>
+          </tr>
+          <tr>
+            <td>Color contrast</td>
+            <td>Strong</td>
+            <td>Dark text on light backgrounds and white text on dark blue backgrounds are used.</td>
+          </tr>
+          <tr>
+            <td>ARIA live feedback</td>
+            <td>Yes</td>
+            <td>Interactive output areas use aria-live="polite".</td>
+          </tr>
+          <tr>
+            <td>Responsive design</td>
+            <td>Yes</td>
+            <td>Layout adapts to smaller screens.</td>
+          </tr>
+          <tr>
+            <td>Reduced motion consideration</td>
+            <td>Mostly</td>
+            <td>Only minor tooltip opacity transition is used. It can be removed for strict reduced-motion requirements.</td>
+          </tr>
+          <tr>
+            <td>Formal automated audit</td>
+            <td>No</td>
+            <td>Score is an informed estimate. Final score should be confirmed using WAVE, axe DevTools, Lighthouse, or your institutional accessibility checker.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <footer>
+    <p>Menu Planning Lesson App | Designed for community college health studies instruction</p>
+  </footer>
+
+  <script>
+    function buildMenu() {
+      const breakfast = document.getElementById('breakfast').value;
+      const lunch = document.getElementById('lunch').value;
+      const dinner = document.getElementById('dinner').value;
+      const snack = document.getElementById('snack').value;
+      const output = document.getElementById('menuOutput');
+
+      output.innerHTML = `
+        <h4>Your One-Day Menu</h4>
+        <ul>
+          <li><strong>Breakfast:</strong> ${breakfast}</li>
+          <li><strong>Lunch:</strong> ${lunch}</li>
+          <li><strong>Dinner:</strong> ${dinner}</li>
+          <li><strong>Snack:</strong> ${snack}</li>
+        </ul>
+        <p><strong>Next step:</strong> Use the checklist below to evaluate balance, variety, and practicality.</p>
+      `;
+    }
+
+    function scoreChecklist() {
+      const checks = document.querySelectorAll('.menu-check');
+      let score = 0;
+      checks.forEach(check => {
+        if (check.checked) score++;
+      });
+
+      const output = document.getElementById('checklistOutput');
+      let feedback = '';
+
+      if (score >= 5) {
+        feedback = 'Strong plan. Your menu shows balance and practicality.';
+      } else if (score >= 3) {
+        feedback = 'Good start. Look for one or two realistic improvements.';
+      } else {
+        feedback = 'Needs revision. Add more food group variety and check whether the plan fits the person’s real life.';
+      }
+
+      output.textContent = `Score: ${score} out of 6. ${feedback}`;
+    }
+
+    function showScenarioPrompt() {
+      const scenario = document.getElementById('scenario').value;
+      const output = document.getElementById('scenarioOutput');
+
+      let prompt = '';
+
+      if (scenario.includes('grab-and-go')) {
+        prompt = 'What portable foods could be prepared ahead of time? Consider wraps, yogurt, fruit, nuts, hard-boiled eggs, or ready-to-eat vegetables.';
+      } else if (scenario.includes('tight budget')) {
+        prompt = 'Which affordable staples could support this menu? Consider beans, lentils, eggs, frozen vegetables, oats, rice, pasta, and seasonal produce.';
+      } else if (scenario.includes('sodium')) {
+        prompt = 'What lower-sodium swaps could be made? Consider rinsing canned beans, using herbs/spices, choosing low-sodium broths, and limiting highly processed foods.';
+      } else if (scenario.includes('vegetarian')) {
+        prompt = 'Where will protein come from? Consider beans, lentils, tofu, eggs, Greek yogurt, nuts, seeds, and whole grains.';
+      } else {
+        prompt = 'What no-cook or low-equipment meals could work? Consider microwave grains, canned beans, bagged salads, fruit, yogurt, and pre-cut vegetables.';
+      }
+
+      output.innerHTML = `<p><strong>Scenario:</strong> ${scenario}</p><p><strong>Discussion prompt:</strong> ${prompt}</p>`;
+    }
+
+    function saveReflection() {
+      const reflection = document.getElementById('reflection').value.trim();
+      const output = document.getElementById('reflectionOutput');
+
+      if (!reflection) {
+        output.textContent = 'Please enter a reflection before saving.';
+        return;
+      }
+
+      localStorage.setItem('menuPlanningReflection', reflection);
+      output.textContent = 'Reflection saved in this browser. It will remain available on this device unless browser storage is cleared.';
+    }
+
+    function gradeQuiz() {
+      const q1 = document.querySelector('input[name="q1"]:checked');
+      const q2 = document.querySelector('input[name="q2"]:checked');
+      const output = document.getElementById('quizOutput');
+
+      if (!q1 || !q2) {
+        output.textContent = 'Please answer both questions before submitting.';
+        return;
+      }
+
+      let score = 0;
+      if (q1.value === 'b') score++;
+      if (q2.value === 'a') score++;
+
+      let feedback = score === 2
+        ? 'Excellent. You understand the main idea of realistic, balanced menu planning.'
+        : 'Review the mini lesson and focus on practicality, balance, and variety.';
+
+      output.textContent = `Knowledge check score: ${score} out of 2. ${feedback}`;
+    }
+  </script>
+</body>
+</html>
